@@ -75,7 +75,9 @@ with tempfile.TemporaryDirectory(prefix="mgl_ci_smoke_") as tmp:
 
 		config = config_cls(render_mode="rgb_array")
 		builder = builder_cls(config)
-		env = builder.build_env(output_dir_path=base_dir / task_name.lower())
+		output_dir = base_dir / task_name.lower()
+		output_dir.mkdir(parents=True, exist_ok=True)
+		env = builder.build_env(output_dir_path=output_dir)
 
 		try:
 			env.reset()
