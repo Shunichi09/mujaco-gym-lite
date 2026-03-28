@@ -1,0 +1,112 @@
+[build-system]
+requires = ["setuptools >= 61.0.0", "wheel", "pytest-runner"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mujaco_gym_lite"
+authors = [{ name = "Shunichi Sekiguchi" }]
+maintainers = [{ name = "Shunichi Sekiguchi" }]
+description = ""
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: POSIX :: Linux",
+]
+keywords = [
+    "deep learning",
+    "artificial intelligence",
+    "machine learning",
+    "neural network",
+]
+requires-python = ">=3.10"
+dynamic = ["version"]
+dependencies = [
+    "opencv-python",
+    "packaging",
+    "tqdm",
+    "gymnasium",
+    "matplotlib",
+    "imageio",
+    "pygame",
+    "streamlit",
+    "torch",
+    "open3d >= 0.19.0",
+    "numpy",
+    "h5py",
+    "tensorboard",
+    "shapely",
+    "google-generativeai",
+    "accelerate",
+    "openai",
+    "mlflow",
+    "moviepy",
+    "loguru",
+]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov", "mock"]
+
+[tool.setuptools.dynamic]
+version = { attr = "mujaco_gym_lite.__version__" }
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.data-files]
+"mujaco_gym_lite/assets" = ["assets/**/*.*"]
+
+[tool.setuptools.packages.find]
+exclude = ["bin*", "docs*", "examples*", "tests*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-s"
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  dockerfiles
+  assets
+)
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 120
+honor_noqa = true
+known_first_party = ["torch", "mujoco"]
+skip_glob = ["external", "assets"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+no_implicit_optional = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unreachable = true
+exclude = '''(?x)(
+    ^legacy/.*$
+    | ^tests/.*$
+    | ^test_resources/.*$
+    | ^bin/.*$
+    | ^assets/.*$
+    | examples/.*
+)'''
+
+[[tool.mypy.overrides]]
+module = [""]
+ignore_errors = true

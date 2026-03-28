@@ -59,13 +59,13 @@ def flatten_transformation_matrix(matrix: npt.NDArray):
     return np.concatenate([position, rotation])
 
 
-def _mujoco_quat_to_scipy_quat(nnabla_grasp_quat: npt.NDArray) -> npt.NDArray:
+def _mujoco_quat_to_scipy_quat(mujoco_quat: npt.NDArray) -> npt.NDArray:
     """(w, x, y, z) to (x, y, z, w)"""
-    if len(nnabla_grasp_quat.shape) == 2:
-        scipy_quat = nnabla_grasp_quat[:, np.array([1, 2, 3, 0])]
+    if len(mujoco_quat.shape) == 2:
+        scipy_quat = mujoco_quat[:, np.array([1, 2, 3, 0])]
         assert scipy_quat.shape[1] == 4
-    elif len(nnabla_grasp_quat.shape) == 1:
-        scipy_quat = nnabla_grasp_quat[np.array([1, 2, 3, 0])]
+    elif len(mujoco_quat.shape) == 1:
+        scipy_quat = mujoco_quat[np.array([1, 2, 3, 0])]
         assert scipy_quat.shape[0] == 4
     else:
         raise ValueError
@@ -76,15 +76,15 @@ def _mujoco_quat_to_scipy_quat(nnabla_grasp_quat: npt.NDArray) -> npt.NDArray:
 def _scipy_quat_to_mujoco_quat(scipy_quat: npt.NDArray) -> npt.NDArray:
     """(x, y, z, w) to (w, x, y, z)"""
     if len(scipy_quat.shape) == 2:
-        nnabla_grasp_quat = scipy_quat[:, np.array([3, 0, 1, 2])]
-        assert nnabla_grasp_quat.shape[1] == 4
+        mujoco_quat = scipy_quat[:, np.array([3, 0, 1, 2])]
+        assert mujoco_quat.shape[1] == 4
     elif len(scipy_quat.shape) == 1:
-        nnabla_grasp_quat = scipy_quat[np.array([3, 0, 1, 2])]
-        assert nnabla_grasp_quat.shape[0] == 4
+        mujoco_quat = scipy_quat[np.array([3, 0, 1, 2])]
+        assert mujoco_quat.shape[0] == 4
     else:
         raise ValueError
 
-    return nnabla_grasp_quat
+    return mujoco_quat
 
 
 def quat_to_matrix(quaternion: npt.NDArray) -> npt.NDArray:
@@ -104,8 +104,8 @@ def quat_to_rotvec(quaternion: npt.NDArray) -> npt.NDArray:
 def rotvec_to_quat(rotvec: npt.NDArray) -> npt.NDArray:
     scipy_rotation = Rotation.from_rotvec(rotvec)
     scipy_quaternion = scipy_rotation.as_quat()
-    nnabla_grasp_quaternion = _scipy_quat_to_mujoco_quat(scipy_quaternion)
-    return np.array(nnabla_grasp_quaternion)
+    mujoco_quaternion = _scipy_quat_to_mujoco_quat(scipy_quaternion)
+    return np.array(mujoco_quaternion)
 
 
 def rotvec_to_matrix(rotvec: npt.NDArray) -> npt.NDArray:
@@ -117,8 +117,8 @@ def matrix_to_quat(matrix: npt.NDArray) -> npt.NDArray:
     # (w x y z) to (x y z w)
     scipy_rotation = Rotation.from_matrix(matrix)
     scipy_quaternion = scipy_rotation.as_quat()
-    nnabla_grasp_quaternion = _scipy_quat_to_mujoco_quat(scipy_quaternion)
-    return np.array(nnabla_grasp_quaternion)
+    mujoco_quaternion = _scipy_quat_to_mujoco_quat(scipy_quaternion)
+    return np.array(mujoco_quaternion)
 
 
 def euler_to_quat(
@@ -127,8 +127,8 @@ def euler_to_quat(
 ) -> npt.NDArray:
     scipy_rotation = Rotation.from_euler(order, angles, degrees=False)
     scipy_quaternion = scipy_rotation.as_quat()
-    nnabla_grasp_quaternion = _scipy_quat_to_mujoco_quat(scipy_quaternion)
-    return np.array(nnabla_grasp_quaternion)
+    mujoco_quaternion = _scipy_quat_to_mujoco_quat(scipy_quaternion)
+    return np.array(mujoco_quaternion)
 
 
 def euler_to_matrix(

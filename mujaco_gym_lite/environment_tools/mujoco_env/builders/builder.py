@@ -1,5 +1,5 @@
-import pathlib
 import os
+import pathlib
 import sys
 from dataclasses import dataclass, field
 from typing import Optional, Union
