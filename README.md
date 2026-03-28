@@ -6,7 +6,7 @@
 
 It includes:
 
-- MuJoCo-based manipulation tasks (drawer, button, door, window, assembly ring, mug rack, ring, hinged box, lever, soccer, lidded box)
+- MuJoCo-based manipulation tasks (drawer, button, door, assembly ring, hinged box, lever, soccer, lidded box)
 - Example scripts for scripted demos and environment debugging
 
 ## Prerequisites
