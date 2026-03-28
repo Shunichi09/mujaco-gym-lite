@@ -1,6 +1,6 @@
 # Mujaco Gym Lite (Jaco2 + MuJoCo)
 
-[![Build](https://github.com/Shunichi09/mujaco-gym-lite/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Shunichi09/mujaco-gym-lite/actions/workflows/build.yml) [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/) [![Lint: flake8](https://img.shields.io/badge/lint-flake8-4C9CD6.svg)](https://flake8.pycqa.org/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Imports: isort](https://img.shields.io/badge/imports-isort-ef8336.svg)](https://pycqa.github.io/isort/)
+[![Build](https://github.com/Shunichi09/mujaco-gym-lite/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Shunichi09/mujaco-gym-lite/actions/workflows/build.yml) [![PyPI version](https://img.shields.io/pypi/v/mujaco-gym-lite.svg)](https://pypi.org/project/mujaco-gym-lite/) [![PyPI downloads](https://img.shields.io/pypi/dm/mujaco-gym-lite)](https://pypi.org/project/mujaco-gym-lite/) [![License](https://img.shields.io/pypi/l/mujaco-gym-lite)](https://pypi.org/project/mujaco-gym-lite/) [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/) [![Lint: flake8](https://img.shields.io/badge/lint-flake8-4C9CD6.svg)](https://flake8.pycqa.org/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Imports: isort](https://img.shields.io/badge/imports-isort-ef8336.svg)](https://pycqa.github.io/isort/)
 
 `mujaco-gym-lite` is a lightweight task suite for robotic manipulation with the Kinova Jaco2 arm in MuJoCo.
 
@@ -20,12 +20,25 @@ If you run with local rendering and miss system libraries, install them on Ubunt
 
 ```bash
 sudo apt update
-sudo apt install -y libglfw3 libgl1 libosmesa6
+sudo apt install -y libglfw3 libgl1 libosmesa6 libopenblas0
 ```
 
 ## Installation
 
-### Local Python environment
+### Install from PyPI (recommended)
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip install --upgrade pip setuptools wheel
+pip install mujaco-gym-lite
+
+# Required for MuJoCo tasks
+pip install mujoco "gymnasium[mujoco]"
+```
+
+### Install from source (development)
 
 ```bash
 git clone <your-fork-or-this-repo-url>
