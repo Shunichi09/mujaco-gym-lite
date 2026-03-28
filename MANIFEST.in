@@ -1,3 +1,4 @@
 include README.md
 include LICENSE
 recursive-include assets *
+recursive-include mujaco_gym_lite/environment_tools/ik_solvers/ikfast_binds *.so

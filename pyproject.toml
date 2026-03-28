@@ -61,6 +61,11 @@ version = { attr = "mujaco_gym_lite.__version__" }
 [tool.setuptools]
 include-package-data = true
 
+[tool.setuptools.package-data]
+mujaco_gym_lite = [
+    "environment_tools/ik_solvers/ikfast_binds/*.so",
+]
+
 [tool.setuptools.data-files]
 "mujaco_gym_lite/assets" = ["assets/**/*.*"]
 
