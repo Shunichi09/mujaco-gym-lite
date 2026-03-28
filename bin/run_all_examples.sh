@@ -1,28 +1,91 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run a lightweight smoke check for representative MuJoCo examples.
-# Each script is executed with offscreen rendering to work in CI.
+# Run a lightweight smoke check for representative MuJoCo tasks.
+# Instead of running full scripted demos, build each env and execute a few random steps.
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$ROOT_DIR"
 
 export MUJOCO_GL=${MUJOCO_GL:-osmesa}
 
-examples=(
-	"examples/run_drawer_open_demo.py"
-	"examples/run_button_push_demo.py"
-	"examples/run_sliding_door_open.py"
-	"examples/run_assembly_ring_demo.py"
-	"examples/run_hinged_box_open_demo.py"
-	"examples/run_lever_pull_demo.py"
-	"examples/run_lidded_box_reach_demo.py"
-	"examples/run_soccer_demo.py"
-)
+python - <<'PY'
+import pathlib
+import tempfile
 
-for example in "${examples[@]}"; do
-	echo "[CI] Running: ${example}"
-	timeout 10s python "$example" --render_mode rgb_array
-done
+TASKS = [
+	(
+		"Drawer",
+		"mujaco_gym_lite.environment_tools.mujoco_env.builders.drawer",
+		"DrawerRobotEnvBuilder",
+		"DrawerRobotEnvBuilderConfig",
+	),
+	(
+		"Button",
+		"mujaco_gym_lite.environment_tools.mujoco_env.builders.button",
+		"ButtonRobotEnvBuilder",
+		"ButtonRobotEnvBuilderConfig",
+	),
+	(
+		"SlidingDoor",
+		"mujaco_gym_lite.environment_tools.mujoco_env.builders.door",
+		"SlidingDoorRobotEnvBuilder",
+		"SlidingDoorRobotEnvBuilderConfig",
+	),
+	(
+		"AssemblyRing",
+		"mujaco_gym_lite.environment_tools.mujoco_env.builders.assembly_ring",
+		"AssemblyRingRobotEnvBuilder",
+		"AssemblyRingRobotEnvBuilderConfig",
+	),
+	(
+		"HingedBox",
+		"mujaco_gym_lite.environment_tools.mujoco_env.builders.hinged_box",
+		"HingedBoxRobotEnvBuilder",
+		"HingedBoxRobotEnvBuilderConfig",
+	),
+	(
+		"Lever",
+		"mujaco_gym_lite.environment_tools.mujoco_env.builders.lever",
+		"LeverRobotEnvBuilder",
+		"LeverRobotEnvBuilderConfig",
+	),
+	(
+		"LiddedBox",
+		"mujaco_gym_lite.environment_tools.mujoco_env.builders.lidded_box",
+		"LiddedBoxRobotEnvBuilder",
+		"LiddedBoxRobotEnvBuilderConfig",
+	),
+	(
+		"Soccer",
+		"mujaco_gym_lite.environment_tools.mujoco_env.builders.soccer",
+		"SoccerRobotEnvBuilder",
+		"SoccerRobotEnvBuilderConfig",
+	),
+]
 
-echo "[CI] All example smoke tests completed."
+with tempfile.TemporaryDirectory(prefix="mgl_ci_smoke_") as tmp:
+	base_dir = pathlib.Path(tmp)
+
+	for task_name, module_name, builder_name, config_name in TASKS:
+		print(f"[CI] Smoke: {task_name}")
+		module = __import__(module_name, fromlist=[builder_name, config_name])
+		builder_cls = getattr(module, builder_name)
+		config_cls = getattr(module, config_name)
+
+		config = config_cls(render_mode="rgb_array")
+		builder = builder_cls(config)
+		env = builder.build_env(output_dir_path=base_dir / task_name.lower())
+
+		try:
+			env.reset()
+			for _ in range(3):
+				action = env.action_space.sample()
+				_, _, terminated, truncated, _ = env.step(action)
+				if terminated or truncated:
+					env.reset()
+		finally:
+			env.close()
+
+print("[CI] All task smoke tests completed.")
+PY
