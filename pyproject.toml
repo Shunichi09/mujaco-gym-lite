@@ -64,6 +64,7 @@ include-package-data = true
 [tool.setuptools.package-data]
 mujaco_gym_lite = [
     "environment_tools/ik_solvers/ikfast_binds/*.so",
+    "environment_tools/mujoco_env/env_models/assets/robots/**/*.stl",
 ]
 
 [tool.setuptools.data-files]
